@@ -1,0 +1,13 @@
+<tfoot>
+	 <tr class="@Style?.FooterClass">
+		<td colspan="@(Style?.NumColumns ?? 1)">
+			Is Darkmode? <input type="checkbox" />
+		</td>
+	</tr> 
+</tfoot>
+
+@code {
+
+	[CascadingParameter(Name="FooterStyle")] internal FooterStyle Style { get; set; }
+
+}

@@ -1,0 +1,61 @@
+﻿@using System.Reflection;
+@typeparam TItem
+<table class="@_GridClass">
+	<CascadingValue Name="HeaderRowClass" Value="@HeaderClass">
+		<GridHeader HeaderType="@typeof(TItem)"></GridHeader>
+	</CascadingValue>
+	<tbody>
+
+		@if (Items is null)
+		{
+			@EmptyTemplate
+		} else
+		{
+			@foreach (var item in Items)
+			{
+				<tr>
+					@foreach (var column in Columns)
+					{
+						<td>@column.GetValue(item)</td>
+					}
+				</tr>
+			}
+		}
+
+	</tbody>
+	<CascadingValue Name="FooterStyle" Value="@_FooterStyle">
+		<GridFooter />
+	</CascadingValue>
+</table>
+
+@code {
+
+	[Parameter]
+	public string HeaderClass { get; set; } = string.Empty;
+
+	[Parameter]
+	public string FooterClass { get; set; } = string.Empty;
+
+	[Parameter]
+	public IEnumerable<TItem> Items { get; set; } = null;
+
+	[Parameter, EditorRequired]
+	public RenderFragment EmptyTemplate  { get; set; }
+
+	private IEnumerable<PropertyInfo> Columns { get; set; }
+
+	private FooterStyle _FooterStyle = new FooterStyle();
+
+	private string _GridClass = "";
+
+	protected override Task OnInitializedAsync()
+	{
+
+		Columns = typeof(TItem).GetProperties();
+		_FooterStyle.FooterClass = FooterClass;
+		_FooterStyle.NumColumns = Columns.Count();
+
+		return base.OnInitializedAsync();
+	}
+
+}

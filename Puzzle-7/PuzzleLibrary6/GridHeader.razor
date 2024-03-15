@@ -1,0 +1,21 @@
+@using System.Reflection
+<thead>
+	<HeaderRow Columns="@Columns"></HeaderRow>
+</thead>
+
+@code {
+
+	[Parameter]
+	public Type HeaderType { get; set; }
+
+	private IEnumerable<PropertyInfo> Columns { get; set; }
+
+	protected override Task OnInitializedAsync()
+	{
+
+		Columns = HeaderType.GetProperties();
+
+		return base.OnInitializedAsync();
+	}
+
+}
