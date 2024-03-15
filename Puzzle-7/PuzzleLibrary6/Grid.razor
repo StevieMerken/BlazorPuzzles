@@ -54,8 +54,14 @@
 		Columns = typeof(TItem).GetProperties();
 		_FooterStyle.FooterClass = FooterClass;
 		_FooterStyle.NumColumns = Columns.Count();
+		_FooterStyle.OnDarkModeChanged += (s,e) => OnDarkModeChanged();
 
 		return base.OnInitializedAsync();
 	}
 
+	private void OnDarkModeChanged()
+	{
+		_GridClass = _FooterStyle.IsDarkMode ? "darkMode" : "";
+		StateHasChanged();
+	}
 }
