@@ -1,0 +1,29 @@
+﻿@page "/"
+
+<PageTitle>Index</PageTitle>
+
+<h1>Favorite Podcasts</h1>
+
+<PuzzleLibrary6.Grid Items="Podcasts" HeaderClass="gridHeader">
+	<EmptyTemplate>
+		<tr>
+			<td colspan="2">No podcasts found</td>
+		</tr>
+	</EmptyTemplate>
+</PuzzleLibrary6.Grid>
+
+@code {
+
+	public Podcast[] Podcasts = new Podcast[]
+		{
+		new Podcast("DotNetRocks", "https://www.dotnetrocks.com/"),
+		new Podcast("Hanselminutes", "https://hanselminutes.com/"),
+		new Podcast("RunAsRadio", "https://runasradio.com/"),
+		new Podcast("The Azure Podcast", "https://www.azurepodcast.com/"),
+		new Podcast("The Tablet Show", "https://thetabletshow.com/"),
+
+		};
+
+	public record Podcast(string Title, string Url);
+
+}

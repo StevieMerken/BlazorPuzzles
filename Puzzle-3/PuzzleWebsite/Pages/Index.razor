@@ -1,0 +1,27 @@
+@page "/"
+
+<h1>Blazor Puzzle Episodes</h1>
+
+<div id="episodeGrid">
+
+	@foreach (var ep in Episodes)
+	{
+
+		<Episode Item="ep" />
+
+	}
+
+</div>
+
+@code {
+
+	protected IEnumerable<Data.Episode> Episodes = Enumerable.Empty<Data.Episode>();
+
+	protected override void OnInitialized()
+	{
+
+		Episodes = Data.Episode.LoadEpisodes();
+
+	}
+
+}

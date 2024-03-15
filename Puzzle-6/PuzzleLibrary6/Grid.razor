@@ -1,0 +1,47 @@
+﻿@using System.Reflection;
+@typeparam TItem
+<table>
+	<GridHeader HeaderType="@typeof(TItem)" class="@HeaderClass"></GridHeader>
+	<tbody>
+
+		@if (Items is null)
+		{
+			@EmptyTemplate
+		} else
+		{
+			@foreach (var item in Items)
+			{
+				<tr>
+					@foreach (var column in Columns)
+					{
+						<td>@column.GetValue(item)</td>
+					}
+				</tr>
+			}
+		}
+
+	</tbody>
+</table>
+
+@code {
+
+	[Parameter]
+	public string HeaderClass { get; set; } = string.Empty;
+
+	[Parameter]
+	public IEnumerable<TItem> Items { get; set; } = null;
+
+	[Parameter, EditorRequired]
+	public RenderFragment EmptyTemplate  { get; set; }
+
+	private IEnumerable<PropertyInfo> Columns { get; set; }
+
+	protected override Task OnInitializedAsync()
+	{
+
+		Columns = typeof(TItem).GetProperties();
+
+		return base.OnInitializedAsync();
+	}
+
+}

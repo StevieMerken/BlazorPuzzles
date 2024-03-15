@@ -1,0 +1,43 @@
+﻿@page "/"
+@inject IJSRuntime jsRuntime
+
+<PageTitle>Index</PageTitle>
+
+<h1>Blazor Puzzle #2</h1>
+<p>
+    This is a demo of calling JavaScript from C# and
+    calling C# from JavaScript. When you press the
+    button, a JavaScript method (DoSomeJavaScript)
+    is called passing this page as the .NET Object
+    reference. You can see this JavaScript in the
+    wwwroot/index.html file. The JavaScript function
+    waits 5 seconds, and then calls our C# method
+    SomethingHappened, which sets the Message string
+    variable. We are showing the Message string in the
+    UI. At least, that's our intent. However, the
+    message is never shown. The question is "why?"
+</p>
+
+<button disabled="@buttonDisabled" @onclick="Button_Clicked">Start JavaScript</button>
+<br/><br/>
+
+<p>@Message</p>
+
+@code
+{
+    string Message { get; set; } = string.Empty;
+    bool buttonDisabled { get; set; } = false;
+
+    async Task Button_Clicked()
+    {
+        await jsRuntime.InvokeVoidAsync("DoSomeJavaScript", DotNetObjectReference.Create(this));
+        buttonDisabled = true;
+    }
+
+    [JSInvokable]
+    public async Task SomethingHappened()
+    {
+        Message = "Hello! JavaScript Calling";
+        StateHasChanged();
+    }
+}

@@ -1,0 +1,19 @@
+@using System.Reflection
+
+<tr class="@CssClass">
+	@foreach (var column in Columns)
+	{
+		<th>@column.Name</th>
+	}
+</tr>
+
+@code {
+
+	[Parameter]
+	public IEnumerable<PropertyInfo> Columns { get; set; }
+
+	[Parameter]
+	public string CssClass { get; set; }
+
+
+}

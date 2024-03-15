@@ -1,0 +1,24 @@
+@using System.Reflection
+<thead>
+	<HeaderRow Columns="@Columns" @attributes=AdditionalAttributes></HeaderRow>
+</thead>
+
+@code {
+
+	[Parameter(CaptureUnmatchedValues = true)]
+	public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+	[Parameter]
+	public Type HeaderType { get; set; }
+
+	private IEnumerable<PropertyInfo> Columns { get; set; }
+
+	protected override Task OnInitializedAsync()
+	{
+
+		Columns = HeaderType.GetProperties();
+
+		return base.OnInitializedAsync();
+	}
+
+}

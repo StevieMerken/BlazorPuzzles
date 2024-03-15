@@ -1,0 +1,29 @@
+﻿@page "/details/{id:int}"
+
+@if (ThisEpisode is not null)
+{
+
+	<h3>@ThisEpisode.Label</h3>
+
+	<a href="@ThisEpisode.LinkUrl" target="_blank">
+		<img src="@ThisEpisode.ThumbnailUrl" />
+	</a>
+
+}
+
+@code {
+
+	[Parameter]
+	public int Id { get; set; }
+
+	public Data.Episode ThisEpisode { get; set; }
+
+	protected override void OnInitialized()
+	{
+
+		ThisEpisode = Data.Episode.LoadEpisodes().FirstOrDefault(e => e.Id == Id);
+
+		base.OnInitialized();
+	}
+
+}

@@ -1,0 +1,14 @@
+﻿<a href="/details/@Item.Id">
+
+	<img src="@Item.ThumbnailUrl" />
+
+	<div class="description">@Item.Label</div>
+
+</a>
+
+@code {
+
+	[Parameter]
+	public Data.Episode Item { get; set; }
+
+}
