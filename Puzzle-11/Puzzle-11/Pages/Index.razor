@@ -1,5 +1,4 @@
 ﻿@page "/"
-@inject AppState appState
 
 <p>
     This is an example of using a service to share state between components.
@@ -16,8 +15,14 @@
 </p>
 
 <h3>Start Typing</h3>
-<input @bind=appState.Message @bind:event="oninput" />
+<input @bind=AppState.Message @bind:event="oninput" />
 
 <br />
 <br />
-<p>@appState.Message</p>
+<p>@AppState.Message</p>
+
+@code 
+{
+    [CascadingParameter(Name="AppState")]
+    public AppState AppState { get; set; }
+}
