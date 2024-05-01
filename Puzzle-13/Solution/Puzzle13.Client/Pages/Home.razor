@@ -1,0 +1,94 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@inject ApiService apiService
+
+<style>
+    .cell-style {
+        vertical-align: top;
+    }
+
+    .quick-grid tr:nth-child(odd) {
+        background-color: #f2f2f2; /* Light grey for odd rows */
+        padding-bottom: 10px;
+    }
+
+    .quick-grid tr:nth-child(even) {
+        background-color: white; /* White for even rows */
+        padding-bottom: 10px;
+    }
+</style>
+
+<PageTitle>Puzzle 13 Upgrade</PageTitle>
+<h1>Platform: @platform</h1>
+<br />
+
+@if (people == null)
+{
+    <button disabled=@buttonDisabled @onclick="LoadPeople">Load All People</button>
+}
+else if (people.Count == 0)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <button disabled=@buttonDisabled @onclick="LoadPeople">Reload People</button>
+    <br />
+    <br />
+    <Paginator State="@pagination" />
+    <QuickGrid Class="quick-grid"
+               Items="@itemsQueryable"
+               Pagination="@pagination">
+        <PropertyColumn Property="@(p => p.FirstName)"
+                        Title="First Name"
+                        Sortable="true"
+                        Class="cell-style" />
+        <PropertyColumn Property="@(p => p.LastName)"
+                        Title="Last Name"
+                        Sortable="true"
+                        Class="cell-style" />
+        <PropertyColumn Property="@(p => p.Bio)"
+                        Title="Bio"
+                        Sortable="true"
+                        Class="cell-style" />
+        <TemplateColumn Title="Photo"
+                        Class="cell-style">
+            @{
+                var item = context as dtoPerson;
+                <img src="@item.PhotoUrl" style="width:50px;" alt="Photo" />
+            }
+        </TemplateColumn>
+    </QuickGrid>
+}
+
+@code
+{
+    List<dtoPerson> people = null;
+    PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
+    IQueryable<dtoPerson>? itemsQueryable;
+    bool buttonDisabled = true;
+    string platform = "SSR";
+
+    async Task LoadPeople()
+    {
+        buttonDisabled = true;
+        if (people != null)
+            people.Clear();
+
+        await InvokeAsync(StateHasChanged);
+
+        people = await apiService.GetPeopleAsync();
+        itemsQueryable = people.AsQueryable();
+        buttonDisabled = false;
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            platform = (OperatingSystem.IsBrowser() ? "Wasm" : "Server");
+            buttonDisabled = false;
+            StateHasChanged();
+        }
+    }
+}
