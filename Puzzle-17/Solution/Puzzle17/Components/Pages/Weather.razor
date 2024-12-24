@@ -1,0 +1,58 @@
+﻿@page "/weather"
+@attribute [StreamRendering]
+
+<PageTitle>Weather</PageTitle>
+
+<h1>Weather</h1>
+
+<p>This component demonstrates showing data.</p>
+
+<select size="@listSize" style="width:100%;">
+    @foreach (var forecast in forecasts)
+    {
+        <option value="@forecast.Id">@forecast.Id @forecast.Summary</option>
+    }
+</select>
+
+@code {
+    private readonly int listSize = 20;
+
+    private List<WeatherForecast> forecasts = new List<WeatherForecast>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        int count = 5000;
+        forecasts = await GetWeatherForecasts(count);
+    }
+
+    private async Task<List<WeatherForecast>> GetWeatherForecasts(int count)
+    {
+        var forcasts = new List<WeatherForecast>();
+        var startDate = DateOnly.FromDateTime(DateTime.Now);
+        var summaries = new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
+
+        for (int i = 0; i < count; i++)
+        {
+            var forecast = new WeatherForecast
+            {
+                Id = i + 1,
+                Date = startDate.AddDays(i),
+                TemperatureC = Random.Shared.Next(-20, 55),
+                Summary = summaries[Random.Shared.Next(summaries.Length)]
+            };
+            forecasts.Add(forecast);
+        }
+        // simulate a timeout from a database query
+        await Task.Delay(2000);
+        return forecasts;
+    }
+
+    private class WeatherForecast
+    {
+        public int Id { get; set; }
+        public DateOnly Date { get; set; }
+        public int TemperatureC { get; set; }
+        public string? Summary { get; set; }
+        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    }
+}
