@@ -1,0 +1,17 @@
+﻿@inject HttpClient HttpClient
+
+<h3>@welcomeMessage</h3>
+
+@code {
+
+    string welcomeMessage = "Welcome message from the component";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            welcomeMessage = await HttpClient.GetStringAsync("welcome-message");
+            StateHasChanged();
+        }
+    }
+}

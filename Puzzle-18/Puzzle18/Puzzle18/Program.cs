@@ -3,6 +3,8 @@ using Puzzle18.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddScoped<HttpClient>();
+
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
@@ -29,5 +31,8 @@ app.UseAntiforgery();
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(Counter).Assembly);
+
+app.MapGet("/welcome-message", (IConfiguration configuration) => configuration["WelcomeMessage"]);
+
 
 app.Run();

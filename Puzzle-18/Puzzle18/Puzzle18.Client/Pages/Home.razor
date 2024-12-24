@@ -1,9 +1,8 @@
 ﻿@page "/"
-@inject IConfiguration configuration
 
 <PageTitle>Home</PageTitle>
 
-<h1>@welcomeMessage</h1>
+<WelcomeComponent></WelcomeComponent>
 
 <p>
     This is a Blazor Web App running on .NET 8 with the Interactive render mode set to "WebAssembly" and the Interactivity location set to "Global".
@@ -20,11 +19,4 @@
 
 @code {
 
-    string welcomeMessage = string.Empty;
-
-    protected override void OnInitialized()
-    {
-        // This seems to work... until it doesn't.
-        welcomeMessage = configuration["WelcomeMessage"];
-    }
 }
