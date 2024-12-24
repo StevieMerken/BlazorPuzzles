@@ -1,5 +1,6 @@
 using Puzzle20.Client.Pages;
 using Puzzle20.Components;
+using static System.Net.Mime.MediaTypeNames;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,5 +30,8 @@ app.UseAntiforgery();
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(Puzzle20.Client._Imports).Assembly);
+
+app.UseStatusCodePagesWithRedirects("/StatusCode/{0}");
+//app.UseStatusCodePages(Text.Plain, "Status Code Page: {0}");
 
 app.Run();
