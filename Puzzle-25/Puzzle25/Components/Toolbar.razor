@@ -1,0 +1,105 @@
+﻿<style>
+    .blazicon {
+        cursor: pointer;
+        zoom: 1.5;
+    }
+
+    .toolbar {
+        padding: 5px;
+        background-color: lightgray;
+    }
+</style>
+
+<div class="toolbar">
+    <Blazicon class="blazicon" Svg="FontAwesomeRegularIcon.SquarePlus" @onclick="Plus_Clicked"></Blazicon>
+    <span>&nbsp;</span>
+
+    @foreach (var dynamicType in DynamicTypes)
+    {
+        var buttonModel = InstantiateDynamicType(dynamicType) as ButtonModel;
+        if (buttonModel != null)
+        {
+            <button class="btn btn-primary" @onclick="() => buttonModel.OnClick.Invoke()">@buttonModel.Text</button>
+            <span>&nbsp;</span>
+        }
+    }
+
+    <span>@Message</span>
+</div>
+
+@code {
+
+    // There are two immutable properties: Type and Parameters
+    record DynamicType(Type Type, IDictionary<string, object> Parameters);
+
+    // Define a list of dynamic types
+    List<DynamicType> DynamicTypes { get; set; } = new List<DynamicType>();
+
+    // Define a counter for the next button
+    int nextButtonId = 1;
+
+    // Define a message to display when a button is clicked
+    string Message { get; set; } = "";
+
+    // Method to instantiate DynamicType objects
+    private object InstantiateDynamicType(DynamicType dynamicType)
+    {
+        // Use Activator to create an instance of the specified type
+        var instance = Activator.CreateInstance(dynamicType.Type);
+
+        // Set the properties on the instance based on the dictionary of parameters
+        foreach (var param in dynamicType.Parameters)
+        {
+            // Find the property by name and set its value
+            var propertyInfo = dynamicType.Type.GetProperty(param.Key);
+            if (propertyInfo != null && propertyInfo.CanWrite)
+            {
+                propertyInfo.SetValue(instance, param.Value);
+            }
+        }
+        return instance;
+    }
+
+    // Method to add a new button when the plus icon is clicked
+    void Plus_Clicked()
+    {
+        // Define the properties for the new button
+        var properties = new Dictionary<string, object>
+        {
+            { "Id", $"btn-{nextButtonId}" },
+            { "Text", $"Button {nextButtonId}" },
+            { "OnClick", new Action(() => Button_Clicked($"Button {nextButtonId} clicked")) }
+        };
+
+        // Add a new dynamic type to the list
+        DynamicTypes.Add(new DynamicType(typeof(ButtonModel), properties));
+
+        // Increment the counter for the next button
+        nextButtonId++;
+    }
+
+    void Button_Clicked(string message)
+    {
+        // Show the message when a dynamic button is clicked
+        Message = message;
+    }
+
+    /// <summary>
+    /// Class to define properties for a dynamic button
+    /// </summary>
+    public class ButtonModel
+    {
+        public string Id { get; set; }
+        public string Text { get; set; }
+        public Action OnClick { get; set; }
+
+        public ButtonModel() { }
+
+        public ButtonModel(string id, string text, Action onClick)
+        {
+            Id = id;
+            Text = text;
+            OnClick = onClick;
+        }
+    }
+}
