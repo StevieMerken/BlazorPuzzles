@@ -1,0 +1,66 @@
+﻿@page "/contact"
+@using System.ComponentModel.DataAnnotations
+
+<PageTitle>Contact Us</PageTitle>
+
+<h1>Contact Us</h1>
+
+<EditForm FormName="TheContactForm" Model="Model" OnValidSubmit="SubmitForm">
+
+	<ValidationSummary />
+	<DataAnnotationsValidator />
+
+	<div class="form-group">
+		<label for="Name">Name</label>
+		<InputText id="Name" class="form-control" @bind-Value="Model.Name" />
+		<ValidationMessage For="@(() => Model.Name)" />
+	</div>
+
+	<div class="form-group">
+		@* Generate a field for the email *@
+		<label for="Email">Email</label>
+		<InputText id="Email"  class="form-control" @bind-Value="Model.Email" />
+		<ValidationMessage For="@(() => Model.Email)" />
+	</div>
+
+	<div class="form-group">
+		@* Generate a field for the message *@
+		<label for="Message">Message</label>
+		<InputTextArea id="Message"  class="form-control" @bind-Value="Model.Message" />
+		<ValidationMessage For="@(() => Model.Message)" />
+	</div>
+
+	<br/>
+	<br />
+
+	<button type="submit">Contact Carl and Jeff</button>
+
+</EditForm>
+
+@code {
+
+		[SupplyParameterFromForm]
+		public ContactForm Model { get; set; } = new ContactForm();
+
+		async Task SubmitForm()
+		{
+			Console.WriteLine($"Received message from");
+			Console.WriteLine($"Name: {Model.Name}");
+			Console.WriteLine($"Email: {Model.Email}");
+			Console.WriteLine($"Message: {Model.Message}");
+		}
+
+	public class ContactForm
+	{
+
+		[Required]
+		public string Name { get; set; }
+
+		[Required, EmailAddress]
+		public string Email { get; set; }
+
+		[MaxLength(100)]
+		public string Message { get; set; }
+	}
+
+}
